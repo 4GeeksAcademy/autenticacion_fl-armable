@@ -5,12 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from api.models import db, User, Task
 from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
 
 api = Blueprint('api', __name__)
-
-# Allow CORS requests to this API
-CORS(api)
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -58,7 +54,7 @@ def get_all_tasks():
     tasks = Task.get_all_tasks()
     if not tasks:
         return jsonify({"message": "No tasks found"}), 404
-    return jsonify(tasks), 200
+    return jsonify({"tasks": tasks, "message": "Tasks was loaded successfully"}), 200
 
 @api.route("/private/single/<int:id>", methods=["GET"])
 @jwt_required()
@@ -69,4 +65,4 @@ def get_single_task(id):
     task = Task.get_single_task(id)
     if not task:
         return jsonify({"message": "Task not found"}), 404
-    return jsonify(task), 200
+    return jsonify({"task": task, "message": "Task was loaded successfully"}), 200

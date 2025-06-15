@@ -100,22 +100,18 @@ export const Signup = () => {
                                     Submit
                                 </button>
                             </form>
-                            {user === null && isSuscribed === false && (
-                                <>
-                                    <div className="d-flex align-items-center my-3">
-                                        <hr className="flex-grow-1" />
-                                        <span className="mx-2 text-muted">OR</span>
-                                        <hr className="flex-grow-1" />
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary w-100"
-                                        onClick={() => setIsSubscribed(true)}
-                                    >
-                                        Login
-                                    </button>
-                                </>
-                            )}
+                            <div className="d-flex align-items-center my-3">
+                                <hr className="flex-grow-1" />
+                                <span className="mx-2 text-muted">OR</span>
+                                <hr className="flex-grow-1" />
+                            </div>
+                            <button
+                                type="button"
+                                className="btn btn-secondary w-100"
+                                onClick={() => setIsSubscribed(!isSuscribed)}
+                            >
+                                {isSuscribed ? "Signup" : "Login"}
+                            </button>
                             {message && (
                                 <div className="alert alert-info mt-3" role="alert">
                                     {message}

@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
@@ -13,7 +14,6 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 
 # from models import Person
-
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
@@ -32,6 +32,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
+CORS(app, supports_credentials=True, origins="*", allow_headers=["Content-Type", "Authorization"])  # Esto aplica CORS a todas las rutas y errores
+
 # add the admin
 setup_admin(app)
 
@@ -41,12 +43,25 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
-# Handle/serialize errors like a JSON object
+# Configura la extensión Flask-JWT-Extended
+app.config["JWT_SECRET_KEY"] = "super-secret"  # ¡Cambia las palabras "super-secret" por otra cosa!
+jwt = JWTManager(app)
 
-
+# Handle/serialize errors like a JSON object (los jwt errors no fueron necesarios para el ejercicio)
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
+@jwt.unauthorized_loader
+def custom_unauthorized_response(callback):
+    return jsonify({"message": "Missing or invalid token"}), 401
+
+@jwt.invalid_token_loader
+def custom_invalid_token_response(callback):
+    return jsonify({"message": "Invalid token"}), 401
+
+@jwt.expired_token_loader
+def custom_expired_token_response(jwt_header, jwt_payload):
+    return jsonify({"message": "Token has expired"}), 401
 
 # generate sitemap with all your endpoints
 
@@ -71,7 +86,3 @@ def serve_any_other_file(path):
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-
-# Configura la extensión Flask-JWT-Extended
-app.config["JWT_SECRET_KEY"] = "super-secret"  # ¡Cambia las palabras "super-secret" por otra cosa!
-jwt = JWTManager(app)
