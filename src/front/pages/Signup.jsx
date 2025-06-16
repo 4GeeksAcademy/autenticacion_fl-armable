@@ -11,15 +11,14 @@ export const Signup = () => {
     const [isSuscribed, setIsSubscribed] = useState(false); // State to track subscription status
     const { store, dispatch } = useglobalReducer(); // Access the global state and dispatch function
     const user = store.user; // Extract the user from the global state
-    const token = store.token; // Extract the token from the global state
     const navigate = useNavigate(); // Hook to programmatically navigate
 
     useEffect(() => {
         // If user is logged in, redirect to the demo page
-        if (user && token) {
+        if (user) {
             navigate("/demo");
         }
-    }, [user, token, navigate]);
+    }, [user, navigate]);
 
     const handleChange = e => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,13 +46,13 @@ export const Signup = () => {
                 dispatch({ type: "add_user", payload: form.email });
             }
             if (resp.status === 200) {
-                dispatch({ type: "add_token", payload: data.access_token });
+                sessionStorage.setItem("token", data.access_token);
             }
             if (data.message) {
                 setMessage(data.message);
                 setForm({ email: "", password: "" });
             } else {
-                setMessage("Error al crear usuario");
+                setMessage("Error al crear o autenticar usuario");
             }
         } catch (error) {
             setMessage(`Error de red: ${error.message || error}`);

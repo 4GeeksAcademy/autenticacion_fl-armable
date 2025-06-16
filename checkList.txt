@@ -1,0 +1,38 @@
+Registro de usuario
+✅Al principio de cada aplicación no hay usuario o tokens, así que el primer paso que hace sentido es crear un registro de usuario.
+✅El usuario navega a la ruta /signup.
+✅La aplicación de React.js (probablemente usando la librería React Router) deberá detectar la ruta /signup y realizará emparejado con el correspondiente componente de página de React.js, esta página se encargará de representar el HTML del registro.
+✅El usuario escoge y escribe un correo electrónico, una contraseña y hace clic en enviar.
+❌La página de React.js está a la espera del evento onSubmit, este activa la función handleSubmit que obtiene el email y contraseña de la API del backend con Python y flask, probablemente usando una petición POST /token con el email y contraseña en el body payload.
+👉El registro exitoso devuelve un success mensaje.
+
+Inicio de sesión
+❌Esta parte del proceso ocurre solo cuando los nuevos tokens fueron generados. 👉El token se generan más adelante...
+❌El usuario aterriza en la ruta miaplicacion.com/login. 👉Si el usuario se registro antes, debe elegir Login, pero la ruta es la misma que el registro.
+❌La aplicación de React.js (probablemente usando la librería React Router) deberá detectar la ruta /login y realizará un emparejado con el correspondiente componente de página de React.js, esta página se encargará de renderizar el formulario de inicio de sesión.
+👉El formulario es el mismo, la petición a la API cambia de Signup a Login y viceversa a petición del usuario. Se cuanta con la validaciones necesarias: 'usuario registrado', etc.
+✅El usuario llena el formulario de inicio de sesión y lo envía.
+✅La página está esperando a que se active el evento de envío del formulario, y finalmente se activa porque el usuario envía el formulario.
+✅La página ahora recopila la información del nombre de usuario y contraseña para subir (POST) la data a la API.
+✅La API valida que nombre de usuario y contraseña sean correctos y regresa un objeto token.
+✅El front-end de la aplicación guarda el token en el sessionStorage.
+✅El front-end de la aplicación redirecciona a la ruta /private.
+
+Cierre de sesión
+✅Este proceso ocurre cuando el usuario desea cerrar la sesión.
+✅Normalmente, hay un botón para el cierre de sesión en algún lado de la aplicación.
+✅El usuario presiona el botón y el controlador de eventos onClick es llamado.
+✅El front-end de la aplicación elimina el token del sessionStorage.
+✅El front-end de la aplicación redirige a la página de inicio (público).
+
+Validación del Token
+✅Cualquier usuario puede solo escribir /private para intentar visitar la página privada, por eso es que se necesita implementar una validación, para prevenir que usuarios anónimos vean el contenido de la página privada, y debemos redirigir al usuario a la ruta /login o a otra página pública. Así es como usualmente es el proceso:
+✅El usuario escribe cualquier URL privada, por ejemplo: miaplicacion.com/private.
+❌La aplicación de React.js (probablemente usando la librería React Router) detectará la ruta /private y realizará un emparejado con el correspondiente componente de página de React.js que se encargará de renderizar el HTML.
+👉La API devuelve la data solo si el token es válido
+❌Antes de renderizar el HTML -y solo porque esta es una ruta privada- el componente debe verificar que el sessionStorage contiene un token autenticado, normalmente esto se haría en el useEffect porque se quiere que se haga tan pronto la aplicación cargue.
+👉La data se renderiza
+❌Si el sessionStorage 👎 no tiene el token, el usuario actual no está considerado como registrado y el componente debe redirigirlo a la vista del inicio de sesión.
+👉Si la API devuelve 401: usuario no autenticado y lo redirige a signup/login
+❌Si el sessionStorage 👍 contiene el token, el actual usuario está registrado exitosamente y el resto de la vista del componente /private es cargado.
+👉El usuario puede renderizar las páginas Demo y Single siempre que esté autenticado; el token se guarda en sessionStorage.

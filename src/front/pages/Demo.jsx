@@ -17,7 +17,7 @@ export const Demo = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${store.token}`,
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
     });
     const data = await resp.json();
@@ -38,12 +38,12 @@ export const Demo = () => {
 };
 
   useEffect(() => {
-    if (store.token) {
+    if (store.user) {
       loadTodos();
     } else {
-      navigate("/Signup");
+      navigate("/signup");
     }
-  }, [store.token, navigate]);
+  }, [store.user, navigate]);
 
   return (
     <div className="container">

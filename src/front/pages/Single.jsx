@@ -25,7 +25,7 @@ export const Single = props => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${store.token}`,  // Include the token for authorization
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,  // Include the token for authorization
         },
       });
       const data = await resp.json();  // Parse the response data
@@ -47,12 +47,12 @@ export const Single = props => {
   }
 
   useEffect(() => {
-    if (store.token) {
+    if (store.user) {
       singleTodo();
     } else {
-      navigate("/Signup");
+      navigate("/signup");
     }
-  }, [store.token, navigate]);
+  }, [store.user, navigate]);
 
   return (
     <div className="container text-center">

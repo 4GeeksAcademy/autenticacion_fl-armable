@@ -4,7 +4,11 @@ import useGlobalReducer from "../hooks/useGlobalReducer"; // Custom hook for acc
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer(); // Access the global state using the custom hook
 	const user = store.user; // Extract the user from the global state
-	const token = store.token; // Extract the token from the global state
+
+	const handleLogout = async () => {
+    sessionStorage.removeItem("access_token"); // Borra el token del almacenamiento
+    dispatch({ type: "reset_store" }); // Limpia el store global
+};
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -14,7 +18,7 @@ export const Navbar = () => {
 				</Link>
 				<div className="ml-auto">
 					<>
-						{user == null || token == null ? (
+						{user == null? (
 							<Link to="/signup">
 								<button className="btn btn-primary">Sign up</button>
 							</Link>
@@ -22,7 +26,7 @@ export const Navbar = () => {
 							<button
 								type="button"
 								className="btn btn-danger"
-								onClick={() => dispatch({ type: "reset_store" })}
+								onClick={handleLogout}
 							>
 								Log out
 							</button>)}
