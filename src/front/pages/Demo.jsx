@@ -13,29 +13,33 @@ export const Demo = () => {
   const loadTodos = async () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL
     try {
-    const resp = await fetch(`${backendUrl}/api/private/demo`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    });
-    const data = await resp.json();
-    if (resp.status === 200) {
-      dispatch({ type: "add_todos", payload: data.tasks });
+      const resp = await fetch(`${backendUrl}/api/private/demo`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+      const data = await resp.json();
+      if (resp.status === 200) {
+        dispatch({ type: "add_todos", payload: data.tasks });
+      }
+      if (resp.status === 401) {
+        dispatch({ type: "reset_store" })
+      }
+      if (data.message) {
+        console.log(data.message);
+        if (data.message === "Token has expired") {
+          alert(data.message + ". Go to Login");  // Alert the user with the message
+          sessionStorage.removeItem('token');  // Remove the token from session storage
+        }
+      } else {
+        console.error("Error al cargar tareas:", data);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
     }
-    if (resp.status === 401) {
-      dispatch({ type: "reset_store" })
-    }
-    if (data.message) {
-      console.log(data.message);
-    } else {
-      console.error("Error al cargar tareas:", data);
-    }
-  } catch (error) {
-    console.error("Network error:", error);
-  }
-};
+  };
 
   useEffect(() => {
     if (store.user) {
@@ -50,24 +54,24 @@ export const Demo = () => {
       <ul className="list-group">
         {/* Map over the 'todos' array from the store and render each item as a list element */}
         {Array.isArray(store.todos) && store.todos.length > 0 ? store.todos.map(todo => (
-            <li
-              key={todo.id}  // React key for list items.
-              className="list-group-item d-flex justify-content-between"
-              style={{ background: todo.background }}> 
-              
-              {/* Link to the detail page of this todo. */}
-              <Link to={"/single/" + todo.id}>Link to: {todo.title} </Link>
-              
-              <p>Open file ./store.js to see the global store that contains and updates the list of colors</p>
-              
-              <button className="btn btn-success" 
-                onClick={() => dispatch({
-                  type: "add_task", 
-                  payload: { id: todo.id, color: '#ffa500' }
-                })}>
-                Change Color
-              </button>
-            </li> )):(null)}
+          <li
+            key={todo.id}  // React key for list items.
+            className="list-group-item d-flex justify-content-between"
+            style={{ background: todo.background }}>
+
+            {/* Link to the detail page of this todo. */}
+            <Link to={"/single/" + todo.id}>Link to: {todo.title} </Link>
+
+            <p>Open file ./store.js to see the global store that contains and updates the list of colors</p>
+
+            <button className="btn btn-success"
+              onClick={() => dispatch({
+                type: "add_task",
+                payload: { id: todo.id, color: '#ffa500' }
+              })}>
+              Change Color
+            </button>
+          </li>)) : (null)}
       </ul>
 
     </div>

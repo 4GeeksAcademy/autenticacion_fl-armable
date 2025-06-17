@@ -27,6 +27,11 @@ class User(db.Model):
         user = User.query.filter_by(email=email, password=password).first()
         if user:
             return True
+        else:
+            if User.query.filter_by(email=email).first():
+                return password
+            if User.query.filter_by(password=password).first():
+                return email
         return False
     
 class Task(db.Model):

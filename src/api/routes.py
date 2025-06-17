@@ -28,22 +28,24 @@ def signup():
     if not user_created:
         return jsonify({"message": "Email already registered"}), 409
 
-    return jsonify({"message": "User created successfully"}), 201
+    return jsonify({"message": "User created successfully, go to Login"}), 201
 
 @api.route("/login", methods=["POST"])
 def create_token():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
-
     if not email or not password:
         return jsonify({"message": "Email and password are required"}), 400
-
     user_valid = User.get_user(email, password)
+    if user_valid == password:
+        return jsonify({"message": "Invalid password"}), 401
+    if user_valid == email:
+        return jsonify({"message": "Invalid email"}), 401
     if not user_valid:
-        return jsonify({"message": "Invalid email or password"}), 401
+        return jsonify({"message": "email & password are invalid"}), 404
     access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token, message="Login was successfully"), 200
+    return jsonify(access_token=access_token, message="Login was successfully. You will be redirected"), 200
 
 @api.route("/private/demo", methods=["GET"])
 @jwt_required()

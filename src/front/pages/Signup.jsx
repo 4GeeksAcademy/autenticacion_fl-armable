@@ -14,9 +14,12 @@ export const Signup = () => {
     const navigate = useNavigate(); // Hook to programmatically navigate
 
     useEffect(() => {
-        // If user is logged in, redirect to the demo page
+        // If user is logged in, redirect to the demo page after 1 second delay
         if (user) {
-            navigate("/demo");
+            const timeout = setTimeout(() => {
+                navigate("/demo");
+            }, 3000);
+            return () => clearTimeout(timeout);
         }
     }, [user, navigate]);
 
@@ -71,6 +74,16 @@ export const Signup = () => {
                                 {isSuscribed === false ? "Sign up" : "Log in"}
                             </h3>
                             <form onSubmit={handleSubmit}>
+                                { isSuscribed === false &&                                
+                                    <div className="mb-3">
+                                        <label htmlFor="email" className="form-label">Fullname</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="Fullname"
+                                            name="Fullname"
+                                        />
+                                    </div>}
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email</label>
                                     <input
@@ -112,7 +125,14 @@ export const Signup = () => {
                                 {isSuscribed ? "Signup" : "Login"}
                             </button>
                             {message && (
-                                <div className="alert alert-info mt-3" role="alert">
+                                <div
+                                    className={`alert mt-3 ${
+                                        message.toLowerCase().includes("successfully")
+                                            ? "alert-success"
+                                            : "alert-danger"
+                                    }`}
+                                    role="alert"
+                                >
                                     {message}
                                 </div>
                             )}

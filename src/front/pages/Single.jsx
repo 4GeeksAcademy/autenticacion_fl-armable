@@ -38,6 +38,10 @@ export const Single = props => {
       }
       if (data.message) {
         console.log(data.message);  // Log any message from the response
+        if (data.message === "Token has expired") { 
+          alert(data.message + ". Go to Login");  // Alert the user with the message
+          sessionStorage.removeItem('token');  // Remove the token from session storage
+        }
       } else {
         console.error("Error al cargar tarea:", data);
       }

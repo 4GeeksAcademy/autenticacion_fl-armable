@@ -45,6 +45,7 @@ app.register_blueprint(api, url_prefix='/api')
 
 # Configura la extensión Flask-JWT-Extended
 app.config["JWT_SECRET_KEY"] = "super-secret"  # ¡Cambia las palabras "super-secret" por otra cosa!
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 60  # 1 minuto en segundos
 jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object (los jwt errors no fueron necesarios para el ejercicio)

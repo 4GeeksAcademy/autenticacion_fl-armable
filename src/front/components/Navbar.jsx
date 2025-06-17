@@ -6,7 +6,7 @@ export const Navbar = () => {
 	const user = store.user; // Extract the user from the global state
 
 	const handleLogout = async () => {
-    sessionStorage.removeItem("access_token"); // Borra el token del almacenamiento
+    sessionStorage.removeItem("token"); // Borra el token del almacenamiento
     dispatch({ type: "reset_store" }); // Limpia el store global
 };
 
