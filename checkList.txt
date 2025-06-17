@@ -1,3 +1,11 @@
+Retro de Disego
+✅Agregar fullname para que sepa que está en signup
+✅Validar usuario o password
+✅Danger para errores y success para exitoso
+Solo acceder a las tareas del usuario. 👉Implementar en proyecto final
+Invalidar el token en backend. 👉Implementar en proyecto final
+✅Modificar la duración del token
+
 Registro de usuario
 ✅Al principio de cada aplicación no hay usuario o tokens, así que el primer paso que hace sentido es crear un registro de usuario.
 ✅El usuario navega a la ruta /signup.
